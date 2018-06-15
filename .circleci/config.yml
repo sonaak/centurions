@@ -9,8 +9,8 @@ defaults: &defaults
     - image: circleci/golang:1.9
 
 jobs:
-  build:
-
+  setup:
+    <<: *defaults
     steps:
       - checkout
 
@@ -28,6 +28,7 @@ jobs:
             - cc-test-reporter
 
   unit-tests:
+    <<: *defaults
     steps:
       - run:
           name: install go dependencies
