@@ -34,7 +34,16 @@ jobs:
           name: install go dependencies
           command: go get -v -t -d ./...
 
-      - run: go test -v ./... -race -coverprofile=cover.out
+      - run:
+          name: unit test code
+          command: |
+            go test -v ./... -race -coverprofile=cover.out
+            ./tmp/cc-test-reporter format-coverage -t gocov -o tmp/cc.unittest.json ./cover.out
+
+      - persist_to_workspace:
+          root: tmp
+          paths:
+            - cc.unittest.json
 
 workflows:
   version: 2
