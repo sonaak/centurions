@@ -47,6 +47,19 @@ jobs:
           paths:
             - cc.unittest.json
 
+  upload-coverage:
+    <<: *defaults
+    environment:
+      - CC_TEST_REPORTER_ID: 5334368001df960ce78baab402710fdf4594a1c69c294653e5959734150bd644
+    steps:
+      - attach_workspace:
+          at: /go/src/github.com/sonaak/centurion/tmp
+      - run:
+          name: upload coverage results to Code Climate
+          command: |
+            ./tmp/cc-test-reporter sum-coverage tmp/cc.*.json -p 1 -o tmp/cc.total.json
+            ./tmp/cc-test-reporter upload-coverage -i tmp/cc.total.json
+
 workflows:
   version: 2
   commit:
@@ -55,3 +68,6 @@ workflows:
       - unit-tests:
           requires:
             - build
+      - upload-coverage:
+          requires:
+            - unit-tests
