@@ -2,26 +2,35 @@
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
+
+defaults: &defaults
+  working_directory: /go/src/github.com/sonaak/centurion
+  docker:
+    - image: circleci/golang:1.9
+
 jobs:
   build:
-    docker:
-      # specify the version
-      - image: circleci/golang:1.9
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
-    #### TEMPLATE_NOTE: go expects specific checkout path representing url
-    #### expecting it in the form of
-    ####   /go/src/github.com/circleci/go-tool
-    ####   /go/src/bitbucket.org/circleci/go-tool
-    working_directory: /go/src/github.com/sonaak/centurion
     steps:
       - checkout
 
       # specify any bash command here prefixed with `run: `
       - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-      - run: go get -v -t -d ./...
-      - run: go test -v ./...
+      - run:
+          name: Download cc-test-reporter
+          command: |
+            mkdir -p tmp/
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
+            chmod +x ./tmp/cc-test-reporter
+      - persist_to_workspace:
+          root: tmp
+          paths:
+            - cc-test-reporter
+
+  unit-tests:
+    steps:
+      - run:
+          name: install go dependencies
+          command: go get -v -t -d ./...
+
+      - run: go test -v ./... -race -coverprofile=cover.out
