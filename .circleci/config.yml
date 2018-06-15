@@ -9,10 +9,9 @@ defaults: &defaults
     - image: circleci/golang:1.9
 
 jobs:
-  setup:
+  build:
     <<: *defaults
     steps:
-      - checkout
 
       # specify any bash command here prefixed with `run: `
       - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
@@ -30,8 +29,18 @@ jobs:
   unit-tests:
     <<: *defaults
     steps:
+      - checkout
       - run:
           name: install go dependencies
           command: go get -v -t -d ./...
 
       - run: go test -v ./... -race -coverprofile=cover.out
+
+workflows:
+  version: 2
+  commit:
+    jobs:
+      - build
+      - unit-tests:
+          requires:
+            - build
