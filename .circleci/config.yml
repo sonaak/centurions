@@ -39,7 +39,7 @@ jobs:
       - run:
           name: unit test code
           command: |
-            go test -v ./... -race -coverprofile=cover.out
+            scripts/unittest.sh run
             ./tmp/cc-test-reporter format-coverage -t gocov -o tmp/cc.unittest.json ./cover.out
 
       - persist_to_workspace:
