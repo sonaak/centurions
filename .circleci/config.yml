@@ -39,8 +39,11 @@ jobs:
       - run:
           name: unit test code
           command: |
+            # run unittest
             scripts/unittest.sh run
-            ./tmp/cc-test-reporter format-coverage -t gocov -o tmp/cc.unittest.json ./cover.out
+
+            # generate the json files
+            REPORTER=./tmp/cc-test-reporter scripts/unittest.sh coverage
 
       - persist_to_workspace:
           root: tmp
@@ -52,13 +55,15 @@ jobs:
     environment:
       - CC_TEST_REPORTER_ID: 5334368001df960ce78baab402710fdf4594a1c69c294653e5959734150bd644
     steps:
+      - checkout
       - attach_workspace:
           at: /go/src/github.com/sonaak/centurion/tmp
       - run:
           name: upload coverage results to Code Climate
           command: |
-            ./tmp/cc-test-reporter sum-coverage tmp/cc.*.json -p 1 -o tmp/cc.total.json
-            ./tmp/cc-test-reporter upload-coverage -i tmp/cc.total.json
+            # sum coverage
+            REPORTER=./tmp/cc-test-reporter scripts/unittest.sh sum
+            ./tmp/cc-test-reporter upload-coverage -i ./tmp/cc.total.json
 
 workflows:
   version: 2

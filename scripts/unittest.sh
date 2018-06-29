@@ -23,6 +23,21 @@ function unittest() {
 
 function generate_coverage() {
     echo "Using $REPORTER to generate JSON files"
+
+    for cover_file in `find . -name "cover.*.out"`;
+    do
+        report_file=$(echo ${cover_file} | sed 's/\.\/cover\.\(.*\)\.out/cc.\1.json/')
+        echo "Generating $report_file from ${cover_file}"
+        ${REPORTER} format-coverage -t gocov -o tmp/${report_file} ${cover_file}
+    done
+
+    echo "Generating cc.main.json from ./cover.out"
+    ${REPORTER} format-coverage -t gocov -o tmp/cc.main.json ./cover.out
+}
+
+function sum_coverage() {
+    count=$(find tmp -name "cc.*.json" | wc -l)
+    ${REPORTER} sum-coverage tmp/cc.*.json -o tmp/cc.total.json -p ${count}
 }
 
 
@@ -34,7 +49,11 @@ run)
 ;;
 
 coverage)
-  generate_report
+  generate_coverage
+;;
+
+sum)
+  sum_coverage
 ;;
 
 *)
