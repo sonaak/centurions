@@ -11,13 +11,13 @@ function unittest() {
     do
         if [[ -d ${dir} && ! "${dir}" =~ ^(scripts)$ ]]
         then
-            go test ./${dir} -vet -race -v -coverprofile cover.${dir}.out
+            go test ./${dir} -race -v -coverprofile cover.${dir}.out
         fi
 
     done
 
     # unit test the main package
-    go test . -vet -race -v -coverprofile cover.out
+    go test . -race -v -coverprofile cover.out
 }
 
 
