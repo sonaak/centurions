@@ -48,7 +48,7 @@ jobs:
       - persist_to_workspace:
           root: tmp
           paths:
-            - cc.unittest.json
+            - cc.*.json
 
   upload-coverage:
     <<: *defaults
