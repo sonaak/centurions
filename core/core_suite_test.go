@@ -12,3 +12,6 @@ func TestCore(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Core Suite")
 }
+
+var _ = Describe("Core Suite", func() {
+})
