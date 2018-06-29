@@ -6,18 +6,22 @@ then
 fi
 
 function unittest() {
+    EXIT_CODE=0
     # unit tests all the packages
     for dir in `ls . | grep -v vendor`;
     do
         if [[ -d ${dir} && ! "${dir}" =~ ^(scripts)$ ]]
         then
-            go test ./${dir} -race -v -coverprofile cover.${dir}.out
+            go test ./${dir} -race -v -coverprofile cover.${dir}.out || EXIT_CODE=1
         fi
 
     done
 
     # unit test the main package
-    go test . -race -v -coverprofile cover.out
+    go test . -race -v -coverprofile cover.out || EXIT_CODE=1
+
+    # exit poorly if any test failed
+    exit ${EXIT_CODE}
 }
 
 
