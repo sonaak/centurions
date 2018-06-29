@@ -9,7 +9,7 @@ type FlowNode struct {
 }
 
 
-func NewFlowNode(step Runnable, redirect *FlowNode, retry *FlowNode, dependsOn FlowState) *FlowNode {
+func NewFlowNode(step Runnable, redirect *FlowNode, retry *FlowNode, dependsOn *FlowState) *FlowNode {
 	return nil
 }
 
