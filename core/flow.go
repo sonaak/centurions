@@ -5,12 +5,17 @@ type FlowNode struct {
 	Step Runnable
 	Redirect *FlowNode
 	Retry *FlowNode
-	DependsOn FlowState
+	DependsOn *FlowState
 }
 
 
 func NewFlowNode(step Runnable, redirect *FlowNode, retry *FlowNode, dependsOn *FlowState) *FlowNode {
-	return nil
+	return &FlowNode {
+		Step: step,
+		Redirect: redirect,
+		Retry: retry,
+		DependsOn: dependsOn,
+	}
 }
 
 
