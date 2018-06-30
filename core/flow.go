@@ -25,7 +25,10 @@ type FlowNodeStatus struct {
 }
 
 func NewFlowNodeStatus(status Status, node *FlowNode) *FlowNodeStatus {
-	return nil
+	return &FlowNodeStatus {
+		Status: status,
+		Node: node,
+	}
 }
 
 
@@ -35,7 +38,9 @@ type FlowState struct {
 
 
 func NewFlowState(criteria []FlowNodeStatus) *FlowState {
-	return nil
+	return &FlowState {
+		Criteria: criteria,
+	}
 }
 
 
