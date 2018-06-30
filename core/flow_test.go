@@ -12,8 +12,9 @@ func TestFlowNode(t *testing.T) {
 }
 
 var _ = Describe("FlowNode", func(){
-	It("should instantiate correctly with NewFlowNode", func(){
-		Expect(NewFlowNode(nil, nil, nil, nil)).NotTo(BeNil())
+	It("should instantiate correctly with NewFlowNode with all nils", func(){
+		flowNode := NewFlowNode(nil, nil, nil, nil)
+		Expect(flowNode).NotTo(BeNil())
 	})
 })
 
