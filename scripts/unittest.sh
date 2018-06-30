@@ -10,7 +10,7 @@ function unittest() {
     # unit tests all the packages
     for dir in `ls . | grep -v vendor`;
     do
-        if [[ -d ${dir} && ! "${dir}" =~ ^(scripts)$ ]]
+        if [[ -d ${dir} && ! "${dir}" =~ ^(scripts|tmp)$ ]]
         then
             go test ./${dir} -race -v -coverprofile cover.${dir}.out || EXIT_CODE=1
         fi
