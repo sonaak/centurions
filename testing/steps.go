@@ -1,22 +1,21 @@
 package testing
 
 import (
-	"github.com/sonaak/centurions/core"
 	"github.com/pkg/errors"
+	"github.com/sonaak/centurions/core"
 	"sync"
 )
 
 type Recorder struct {
 	store map[string]interface{}
-	lock sync.RWMutex
+	lock  sync.RWMutex
 }
 
 func NewRecorder() *Recorder {
-	return &Recorder {
+	return &Recorder{
 		store: make(map[string]interface{}),
 	}
 }
-
 
 func (recorder *Recorder) Get(key string) (value interface{}, err error) {
 	recorder.lock.RLock()
@@ -30,7 +29,6 @@ func (recorder *Recorder) Get(key string) (value interface{}, err error) {
 	return
 }
 
-
 func (recorder *Recorder) Set(key string, value interface{}) {
 	recorder.lock.Lock()
 	defer recorder.lock.Unlock()
@@ -38,23 +36,22 @@ func (recorder *Recorder) Set(key string, value interface{}) {
 	recorder.store[key] = value
 }
 
-
 const (
-	run = "run"
+	run    = "run"
 	cancel = "cancel"
 )
 
 type MockStep struct {
 	recorder *Recorder
 
-	MockStatus core.Status
+	MockStatus   core.Status
 	CancelResult bool
 }
 
 func NewMockStep(cancelResult bool, mockStatus core.Status) *MockStep {
-	return &MockStep {
-		recorder: NewRecorder(),
-		MockStatus: mockStatus,
+	return &MockStep{
+		recorder:     NewRecorder(),
+		MockStatus:   mockStatus,
 		CancelResult: cancelResult,
 	}
 }

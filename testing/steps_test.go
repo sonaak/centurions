@@ -1,10 +1,10 @@
 package testing
 
 import (
-	"testing"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sonaak/centurions/core"
+	"testing"
 )
 
 func TestRecorder_Get(t *testing.T) {
@@ -45,7 +45,7 @@ var _ = Describe("TestRecorder Get", func() {
 		Expect(val).To(Equal(false))
 	})
 
-	It("should respond with error when there is no such key", func(){
+	It("should respond with error when there is no such key", func() {
 		recorder.Set("foo", 1)
 
 		val, err := recorder.Get("bar")
@@ -59,15 +59,40 @@ func TestMockStep_Run(t *testing.T) {
 	RunSpecs(t, "TestMockStep Run")
 }
 
-var _ = Describe("TestMockStep Run", func(){
-	It("should record the attempt", func(){
+var _ = Describe("TestMockStep Run", func() {
+	It("should record the call to Run", func() {
 		step := NewMockStep(true, core.PASSED)
+		Expect(step.HasRun()).To(Equal(false))
+
 		_ = step.Run()
 		Expect(step.HasRun()).To(Equal(true))
 	})
 
-	It("should respond with the correct status", func(){
+	It("should respond with the correct status", func() {
 		step := NewMockStep(true, core.PASSED)
 		Expect(step.Run()).To(Equal(core.PASSED))
+	})
+})
+
+func TestMockStep_Cancel(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "TestMockStep Cancel")
+}
+
+var _ = Describe("TestMockStep Cancel", func() {
+	It("should record the call to Cancel", func() {
+		step := NewMockStep(true, core.PASSED)
+		Expect(step.HasCanceled()).To(Equal(false))
+
+		_ = step.Cancel()
+		Expect(step.HasCanceled()).To(Equal(true))
+	})
+
+	It("should respond with the correct status", func() {
+		step := NewMockStep(true, core.PASSED)
+		Expect(step.Cancel()).To(Equal(true))
+
+		step = NewMockStep(false, core.PASSED)
+		Expect(step.Cancel()).To(Equal(false))
 	})
 })
