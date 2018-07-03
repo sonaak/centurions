@@ -1,27 +1,25 @@
 package testing
 
-import "testing"
+import (
+	"testing"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
 
 func TestRecorder_Get(t *testing.T) {
-	recorder := Recorder {
-		store: make(map[string]interface{}),
-	}
-
-	recorder.Set("a", uint(1))
-	val, err := recorder.Get("a")
-
-	if err != nil {
-		t.Errorf("expect no error when calling Get: %v", err)
-	}
-
-	switch v := val.(type) {
-	case uint:
-		if v != 1 {
-			t.Errorf("expect value to be 1 (uint); got %d instead", v)
-		}
-
-	default:
-		t.Errorf("expect value to be an integer")
-	}
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "TestRecorder Get")
 }
 
+var _ = Describe("TestRecorder Get", func() {
+	It("should be able to retrieve a value without distorting type", func() {
+		recorder := Recorder {
+			store: make(map[string]interface{}),
+		}
+
+		recorder.Set("a", uint(1))
+		val, err := recorder.Get("a")
+		Expect(err).To(BeNil())
+		Expect(val).To(Equal(uint(1)))
+	})
+})
