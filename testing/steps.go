@@ -11,6 +11,12 @@ type Recorder struct {
 	lock sync.RWMutex
 }
 
+func NewRecorder() *Recorder {
+	return &Recorder {
+		store: make(map[string]interface{}),
+	}
+}
+
 
 func (recorder *Recorder) Get(key string) (value interface{}, err error) {
 	recorder.lock.RLock()
@@ -33,19 +39,50 @@ func (recorder *Recorder) Set(key string, value interface{}) {
 }
 
 
+const (
+	run = "run"
+	cancel = "cancel"
+)
+
 type MockStep struct {
-	recorder Recorder
+	recorder *Recorder
 
 	MockStatus core.Status
 	CancelResult bool
 }
 
+func NewMockStep(cancelResult bool, mockStatus core.Status) *MockStep {
+	return &MockStep {
+		recorder: NewRecorder(),
+		MockStatus: mockStatus,
+		CancelResult: cancelResult,
+	}
+}
+
 func (step *MockStep) Run() core.Status {
-	step.recorder.Set("run", true)
+	step.recorder.Set(run, true)
 	return step.MockStatus
 }
 
 func (step *MockStep) Cancel() bool {
-	step.recorder.Set("cancel", true)
+	step.recorder.Set(cancel, true)
 	return step.CancelResult
+}
+
+func (step *MockStep) hasDone(fName string) bool {
+	val, err := step.recorder.Get(fName)
+	if err != nil {
+		return false
+	}
+
+	hasDone, ok := val.(bool)
+	return ok && hasDone
+}
+
+func (step *MockStep) HasRun() bool {
+	return step.hasDone(run)
+}
+
+func (step *MockStep) HasCanceled() bool {
+	return step.hasDone(cancel)
 }
